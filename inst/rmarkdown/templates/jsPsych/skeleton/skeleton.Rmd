@@ -15,6 +15,10 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+```{r, eval=FALSE}
+# load the plugin scripts in plugins.html which is included in the header.
+```
+
 
 ```{js}
   var trial_1 = {
