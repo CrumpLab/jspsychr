@@ -1,0 +1,4 @@
+name: jsPsych
+description: >
+   A basic template wrapper for jsPsych
+create_dir: TRUE

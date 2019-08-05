@@ -1,0 +1,10 @@
+Package: jsPsychR
+Type: Package
+Title: Template and wrapper for jsPsych experiments
+Version: 0.1.0
+Author: Matthew Crump
+Maintainer: The package maintainer <mcrump@brooklyn.cuny.edu>
+Description: Provides a simple wrapper to generate jsPsych experiments
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
