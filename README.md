@@ -21,4 +21,10 @@ devtools::install_github("CrumpLab/jspsychr")
 
 Read the getting started article (above) for an overview of how `jspsychr` works, and/or head over to the examples repo to see some examples. <https://github.com/CrumpLab/jspsychrexamples>
 
+## Contributors
+
+- Matt Crump - jspsychr
+- Danielle Navarro - code to run experiments locally with plumber, and to save data from a local session
+- Josh De Leeuw - the jspsych javascript library
+
 
