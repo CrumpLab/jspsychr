@@ -152,6 +152,8 @@ Ok, now we have a dataframe that codes our experiment definition. Each row is a 
 
 The next step is to convert this to a javascript object that jspsych can read in. This is accomplished by the `stimulus_df_to_json()` function. Here you enter your dataframe, identify the stimulus column containing the html for your stimuli, and you can enter any additional column names that you want attached as data (these will be used by jspsych when it creates it's data file, allowing each response to be associated with the levels defined in the columns)
 
+The `write_to_script()` function write the json variable inside a `<script> json goes here </script>`, and puts it into the html for the experiment (the r code chunk needs to have results = "asis").
+
 ```{r}
 
 # create json object from dataframe
