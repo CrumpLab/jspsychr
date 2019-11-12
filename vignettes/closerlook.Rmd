@@ -24,7 +24,7 @@ This vignette takes a closer look at some of the R functions available in jspsyc
 
 One of the nice things about jspsych is that it is modular. There is more than one way to write a jspsych experiment, and in general you plug in the jspsych plugins that you need (or write your own).
 
-To illustrate how jspychr fits in, I'll focus on the example experiment that is loaded by the jspsychr template. This is a Stroop experiment that is controlled using a jspsych timeline and timeline variable. To use the timeline functionality, jspsych needs to recieve a javascript object that contains a stimulus for each trial, and any associated data that will be coded alongside the stimulus. This object can be written in javascript directly, for example one could write a variable called `test_stimuli` like below, directly in javascript:
+To illustrate how jspychr fits in, I'll focus on the example experiment that is loaded by the jspsychr template. This is a Stroop experiment that is controlled using a jspsych timeline and timeline variable. To use the timeline functionality, jspsych needs to receive a javascript object that contains a stimulus for each trial, and any associated data that will be coded alongside the stimulus. This object can be written in javascript directly, for example one could write a variable called `test_stimuli` like below, directly in javascript:
 
 ```
 var  test_stimuli =  [
@@ -150,7 +150,7 @@ Does this:
 
 Ok, now we have a dataframe that codes our experiment definition. Each row is a trial. There is a stimulus column that contains the html for the stimulus on each trial, and other columns that code the factors associated with each trial (e.g., whether the trial is congruent or incongruent, the word, the color, etc.).
 
-The next step is to convert this to a javascript object that jspsych can read in. This is accomplished by the `stimulus_df_to_json()` function. Here you enter tyour dataframe, identify the stimulus column containing the html for your stimuli, and you can enter any additional column names that you want attached as data (these will be used by jspsych when it creates it's data file, allowing each response to be associated with the levels defined in the columns)
+The next step is to convert this to a javascript object that jspsych can read in. This is accomplished by the `stimulus_df_to_json()` function. Here you enter your dataframe, identify the stimulus column containing the html for your stimuli, and you can enter any additional column names that you want attached as data (these will be used by jspsych when it creates it's data file, allowing each response to be associated with the levels defined in the columns)
 
 ```{r}
 
