@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/index.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/reference/html_stimulus.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/reference/resource.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/reference/run_locally.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/reference/stimulus_df_to_json.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/reference/unquote.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/reference/write_to_script.html</loc>
+  </url>
+  <url>
+    <loc>https://crumplab.github.io/jspsychr/articles/jspsychr.html</loc>
+  </url>
+</urlset>

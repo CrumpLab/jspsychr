@@ -1,1 +1,7 @@
 destination: docs
+
+url: https://crumplab.github.io/jspsychr
+
+template:
+  opengraph:
+    img: logo.png

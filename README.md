@@ -19,6 +19,6 @@ devtools::install_github("CrumpLab/jspsychr")
 
 ## Examples
 
-Head over to the examples repo to see some examples (work in progress). [https://github.com/CrumpLab/jsPsychRexamples](https://github.com/CrumpLab/jsPsychRexamples)
+Read the getting started article (above) for an overview of how `jspsychr` works, and/or head over to the examples repo to see some examples. <https://github.com/CrumpLab/jspsychrexamples>
 
 
