@@ -1,0 +1,166 @@
+---
+title: "Closer look at the functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Closer look at the functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r setup}
+library(jspsychr)
+```
+
+This vignette takes a closer look at some of the R functions available in jspsychr for building an experiment in jspsych. This assumes you already have some facility with using jspsych (see the jspsych documentation to learn more <https://www.jspsych.org>).
+
+One of the nice things about jspsych is that it is modular. There is more than one way to write a jspsych experiment, and in general you plug in the jspsych plugins that you need (or write your own).
+
+To illustrate how jspychr fits in, I'll focus on the example experiment that is loaded by the jspsychr template. This is a Stroop experiment that is controlled using a jspsych timeline and timeline variable. To use the timeline functionality, jspsych needs to recieve a javascript object that contains a stimulus for each trial, and any associated data that will be coded alongside the stimulus. This object can be written in javascript directly, for example one could write a variable called `test_stimuli` like below, directly in javascript:
+
+```
+var  test_stimuli =  [
+  {
+    "stimulus": "<p id = 'stroop_stim' style = 'color: red; font-size: 60pt;'>red</p>",
+    "data": {
+      "word": "red",
+      "color": "red",
+      "response": "r",
+      "stim_type": "congruent"
+    }
+  },
+  {
+    "stimulus": "<p id = 'stroop_stim' style = 'color: green; font-size: 60pt;'>red</p>",
+    "data": {
+      "word": "red",
+      "color": "green",
+      "response": "g",
+      "stim_type": "incongruent"
+    }
+  }
+  ];
+```
+
+However, I prefer to not have to do this in javascript, or to spend a lot of time writing out this kind of thing by hand. Instead, what I would prefer is to have a script automatically make this stimulus description for me. Now, of course, javascript could also be used to accomplish this, but I like to use R.
+
+## Data frames and experiment design
+
+At the end of the day I'm going to be doing my analysis in R, and it would be nice if I could think about the final product (the data), in terms of how I'm going to use it in R for analysis.
+
+There are many ways to analyse data in R, but a common strategy is to get your data in long-form (as a data.frame, data.table, or tibble, or what have you). Long-form data structure has a natural mapping to the records of a trial based behavioral experiment. On every trial of an experiment something happens (e.g., a stimulus is presented) that is controlled by the experimental design, and some kind of behavior is record (a response). In other words, the long-form representation of the experiment is to have each row in the data record a trial, with columns for factors describing the conditions of the measurement, and a column for the dependent variable. 
+
+To make this more concrete, imagine how you would represent the experimental design of a standard Stroop experiment as a data frame. The example below involves pairing the colors red and green, and creates 4 trials for each congruent and incongruent stimulus.
+
+```{r}
+library(dplyr)
+
+# create dataframe to define stimuli
+stroop_stim <- data.frame( RT = NA,
+                           trial = 1:4,
+                           word = rep(c("red","green"), each=2),
+                           color = rep(c("red","green"), 2),
+                           response = rep(c("r","g"), 2)) %>%
+  mutate(stim_type = as.numeric(word==color)) %>%
+  mutate(stim_type = recode(stim_type, `1` = "congruent", `0` = "incongruent"))
+
+knitr::kable(stroop_stim)
+```
+
+The above data frame is two things. First, it is a data frame with missing data (the RT column for reaction times is NA because the experiment hasn't been run yet, and there were no reaction times collected). Second, it is a definition or recipe for the experimental design. It says what conditions should happen on each trial. On trial 1, the word red should be presented in red, and the correct response could be pressing the r button, and it is coded as a congruent type; and so on, for the remaining three trials.
+
+I used R and a bit of dplyr to build the experiment definition in the form of a dataframe. Wouldn't it be nice if I could just hand this definition over to jspsych, it will run the experiment for me. This is the basic idea of jspsychr. Use R for convenient building of dataframes that define your experiment, then send them to jspsych and pipe them into a jspsych plugin that will run your dataframe as an experiment. Briefly, and I'll keep elaborating, this is done by converting the dataframe to a json object, and passing that jspsych.
+
+## Stroop example
+
+Let's now take a closer look at the R code chunk in the Stroop example. This is slightly more involved than the above example, because instead of making a Stroop experiment with 4 items (combination of red and green), it makes an experiment with 16 items (combinations of red, green, blue and yellow).
+
+Here's the first part, which simply builds a dataframe in R called `stroop_stim`. 
+
+
+```{r}
+library(jspsychr)
+library(dplyr)
+
+# create dataframe to define stimuli
+stroop_stim <- data.frame( stimulus = length(16),
+                           word = rep(c("red","green","blue","yellow"), each=4),
+                           color = rep(c("red","green","blue","yellow"), 4),
+                           response = rep(c("r","g","b","y"), 4),
+                           stim_type = length(16),
+                           id = "stroop_stim",
+                           fontsize = "60pt") %>%
+  mutate(stim_type = as.numeric(word==color)) %>%
+  mutate(stim_type = recode(stim_type, `1` = "congruent", `0` = "incongruent"))
+```
+
+Let's take a quick look at `stroop_stim`
+
+```{r}
+knitr::kable(stroop_stim)
+```
+
+It's basically the same as before, with a few different columns. The RT column is completely missing, but I just used that before to illustrate that eventually we will be getting some reaction time data. Let's focus now on what needs to happen to give this dataframe to jspsych.
+
+First, jspsych wants a javascript object (like from the beginning), that specifies the stimulus on each trial, and the factors (data) associated with the stimulus. More specifically, jspsych wants the html needed to present each stimulus in the browser. 
+
+Notice the stimulus contains just contains a bunch of 1s, these are place holders. What I would like to do is build a new dataframe that fills in the stimulus column with an html definition for each stimulus. For example, for the first stimulus, I want the word to be red, the color to be red, and let's say to set the font-size to 60pt. Notice those properties are already in the row.
+
+The `html_stimulus` function from `jspychr` can help build the required html that we need. For example:
+
+```{r}
+
+# write html definitions to the stimulus column
+# note this could be added as a pipe to the above
+stroop_stim$stimulus <- html_stimulus(df = stroop_stim, 
+                                html_content = "word",
+                                html_element = "p",
+                                column_names = c("color","fontsize"),
+                                css = c("color", "font-size"),
+                                id = "id")
+
+```
+
+Let's take a look at what happened to stroop_stim, apologies that there isn't a better way to render this...
+
+```{r}
+head(stroop_stim)
+```
+
+Note that we're looking at the first 6 rows of stroop_stim. The stimulus column is populated with html that is necessary to present each stimulus.
+
+For example, the following html:
+
+```
+<p id = 'stroop_stim' style = 'color: red; font-size: 60pt;'>red</p>
+```
+
+Does this:
+
+<p id = 'stroop_stim' style = 'color: red; font-size: 60pt;'>red</p>
+
+## Converting the dataframe to json
+
+Ok, now we have a dataframe that codes our experiment definition. Each row is a trial. There is a stimulus column that contains the html for the stimulus on each trial, and other columns that code the factors associated with each trial (e.g., whether the trial is congruent or incongruent, the word, the color, etc.).
+
+The next step is to convert this to a javascript object that jspsych can read in. This is accomplished by the `stimulus_df_to_json()` function. Here you enter tyour dataframe, identify the stimulus column containing the html for your stimuli, and you can enter any additional column names that you want attached as data (these will be used by jspsych when it creates it's data file, allowing each response to be associated with the levels defined in the columns)
+
+```{r}
+
+# create json object from dataframe
+stimulus_json <- stimulus_df_to_json(df = stroop_stim,
+                                     stimulus = "stimulus",
+                                     data = c("word","color","response","stim_type"))
+
+
+write_to_script(stimulus_json,"test_stimuli")
+```
+
+

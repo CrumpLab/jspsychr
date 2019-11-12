@@ -11,7 +11,7 @@ usethis::use_description()
 usethis::use_readme_md()
 
 # create a vignette (.Rmd) document that gets compiled and displayed on pkdown website
-usethis::use_vignette("jspsychr", title="Get Started")
+usethis::use_vignette("closerlook", title="Closer look at the functions")
 
 pkgdown::template_navbar() # generate yml for controlling navbar
 

@@ -2,6 +2,7 @@ pandoc: 2.7.3
 pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
+  closerlook: closerlook.html
   jspsychr: jspsychr.html
 urls:
   reference: https://crumplab.github.io/jspsychr/reference
