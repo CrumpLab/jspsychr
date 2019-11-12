@@ -1,10 +1,24 @@
-Package: jsPsychR
-Type: Package
-Title: Template and wrapper for jsPsych experiments
-Version: 0.1.0
-Author: Matthew Crump
-Maintainer: The package maintainer <mcrump@brooklyn.cuny.edu>
-Description: Provides a simple wrapper to generate jsPsych experiments
-License: What license is it under?
+Package: jspsychr
+Title: Templates and functions for writing and running jspsych experiments from R-studio
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Matt",
+           family = "Crump",
+           role = c("aut", "cre"),
+           email = "mcrump@brooklyn.cuny.edu",
+           comment = c(ORCID = "0000-0002-5612-0090"))
+Description: Templates and functions for writing and running jspsych experiments from R-studio.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.1
+Imports: 
+    plumber,
+    jsonlite,
+    readr,
+    tidyr,
+    htmltools
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

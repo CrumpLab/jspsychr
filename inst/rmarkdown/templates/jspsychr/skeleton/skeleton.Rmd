@@ -1,0 +1,15 @@
+---
+title: "Experiment description"
+author: "your name"
+date: "8/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+Use this Rmd file to describe your experiment for yourself and other people.
+
+Use the index.Rmd in the experiment folder to write the script to run the experiment.
+
