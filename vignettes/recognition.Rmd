@@ -1,0 +1,472 @@
+---
+title: "Walkthrough to build a Recognition memory experiment"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Walkthrough to build a Recognition memory experiment}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+This is a tutorial on building a recognition memory experiment using jspsychr. The source code for all of this can be found here:
+
+<https://github.com/CrumpLab/jspsychrexamples/tree/master/RecognitionMemory> 
+
+My aim in this example is to attempt a walkthrough and discussion of all the steps from beginning to end. So, I'm going to try and live code this and 'think-aloud' as I go.
+
+## open a new jspsychr template
+
+I just did this, so now I have a folder titled `RecognitionMemory`, and I am currently editing what is now `RecognitionMemory.Rmd`, the experiment description file. I haven't touched anything else yet.
+
+I'm going to use this file to write down what I'm doing as I make a recognition memory experiment.
+
+## My new experiment
+
+Let's I want to build a slightly strange recognitionexperiment to test memory for arbitrary non-word strings. Let's also say I want to test whether memory will be better or worse depending on the font-size of the string during encoding.
+
+I need to do make non-word strings, figure out how many to present during encoding, how many to present during test, and then make jspsych run the experiment.
+
+## R code chunk: Generating the stimuli
+
+I'm going to generate the stimuli and basic design in R. First, I open `experiment/index.Rmd`. The jspsych libraries I need are already loaded in this piece of code:
+
+```{r, eval=FALSE}
+# load jspsych and plugin scripts
+# note: this is an r code chunk
+library(htmltools)
+tagList(
+tags$script(src='jspsych-6-2/jspsych.js'),
+tags$script(src='jspsych-6-2/plugins/jspsych-html-keyboard-response.js'),
+tags$script(src='jspsychr/jspsychr.js')
+)
+```
+
+Great, next I'm goint to start editing the second r code chunk, which contains code to build a Stroop experiment. I'll delete everything except for the two lines that call the libraries jspychr and dplyr. So, we'll be starting with something like this:
+
+```{r}
+library(jspsychr)
+library(dplyr)
+
+```
+
+First, I need a bunch of non-words, let's make them 5 letters long. And, let's generate them completely randomly, such that any letter could be chosen for any position. I'll write a function for this and test it.
+
+```{r}
+
+generate_random_string <- function(n_letters = 5){
+  return(paste(sample(LETTERS,n_letters, replace=TRUE), collapse=""))
+}
+
+generate_random_string(n_letters= 5)
+```
+
+Now, let's say I want 100 total non-word strings. I'll present 50 of them during encoding, and all of them at test. I need to run the above function 100 times, but I also want to make sure I don't accidentally make the same non-word twice. My quick and dirty strategy will be to generate 200 nonwords and get all the unique ones. That should get me way more than than the 100 I need.
+
+```{r}
+non_words <- unique(sapply(rep(5,200), generate_random_string))
+non_words <- non_words[1:100]
+```
+
+You can check that there are 100 non words by looking in the environment tab, or by printing non_words to the console, yup there they are:
+
+```{r}
+non_words
+```
+
+Ok, great I have some nonwords. The next step is to create some data frames. I'm going to create one dataframe for the encoding phase, and another for the test phase. These dataframe will set up parameters for the experimental design that I will to jspsych later on.
+
+Let's look at the dataframe for the encoding phase. I want 50 words to be presented, I want to code the fact that they are presented during the encoding phase, and I want to manipulate font size. I'm going to make a dataframe with 4 columns: stimulus, string, phase, and font_size. I'll populate the string column with the first 50 nonwords, and I'll populate the font_size column with two levels of font size (15pt vs. 30pt), such that the first 25 items are assigned to 15pt and the remaining are assigned to 30pt.
+
+```{r}
+encoding_df <- data.frame(stimulus = NA,
+                          string = non_words[1:50],
+                          phase = "Encoding",
+                          font_size = rep(c("15pt","30pt"), each = 25)
+                          )
+```
+
+Notice that the stimulus column is defined as NA. The next step is to write the stimulus column. Eventually we pass all of this to jspsych, and what jspsych needs is the html definition for each stimulus. For example, the following html could be given to jspsych as the recipe for displaying it later on:
+
+```
+<p id = 'id_encode' style = 'font-size: 15pt;'>YRTOX</p>
+```
+
+The above renders YRTOX as a `<p>` element (paragraph element), and it set's the font-size style paramaeter to 15pt. I added an html id so that this unit can be controlled by javascript if one desired control over it for some reason.
+
+Returning to our task, we want to write something like the above for each row of the encoding_df dataframe. This is where jspsychr comes in handy with the `html_stimulus()` function. It takes in a dataframe that has columns defining properties of a stimulus, and the associated css styles to render them (in this case the font_size column). So, the stimulus column can be written just like this: 
+
+```{r}
+encoding_df$stimulus <- html_stimulus(df = encoding_df, 
+                                html_content = "string",
+                                html_element = "p",
+                                column_names = c("font_size"),
+                                css = c("font-size"),
+                                id = "id_encode")
+```
+
+Let's repeat these same steps to make another dataframe controlling the test trials. I'll just copy and paste from above, change the phase to "test", add a new column for type (to say OLD vs NEW), and row bind another dataframe for the NEW items, that has the rest of the non_words (51 to 100).
+
+```{r}
+test_df <- data.frame(stimulus = NA,
+                          string = non_words[1:50],
+                          phase = "test",
+                          type = "OLD",
+                          font_size = rep(c("15pt","30pt"), each = 25)
+                          ) %>%
+  rbind(
+    data.frame(stimulus = NA,
+                          string = non_words[51:100],
+                          phase = "test",
+                          type = "NEW",
+                          font_size = rep(c("15pt","30pt"), each = 25)
+                          )
+  )
+```
+
+Let's write the stimulus column for test_df.
+
+```{r}
+test_df$stimulus <- html_stimulus(df = test_df, 
+                                html_content = "string",
+                                html_element = "p",
+                                column_names = c("font_size"),
+                                css = c("font-size"),
+                                id = "id_encode")
+
+```
+
+Great, now all we need to do is turn these dataframes into a javascript object that we can send to jspsych. We can do this using jspsychr and the `stimulus_df_to_json()` function.
+
+```{r}
+encoding_json <- stimulus_df_to_json(df = encoding_df,
+                                     stimulus = "stimulus",
+                                     data = c("string","phase","font_size"))
+
+test_json <- stimulus_df_to_json(df = test_df,
+                                     stimulus = "stimulus",
+                                     data = c("string","phase","type","font_size"))
+```
+
+In the next step we are going to hand a javascript object over to jspsych, actually two of them, one to define the stimuli for the timeline associated with presenting the encoding items, and another for the test items.
+
+This javascript object should contain a stimulus field and a data field for each stimulus. The data field allows you to insert condition codes that you want for each observation, and these will be recorded in the data file. So, it's important at this step to think carefully about what codes (column factors and levels) you want for analysis later on. In this case, we'll basically want the type (OLD vs NEW), and font-size (15pt vs 30pt) for each test item. I've added in phase for completeness (and to easily distinguish encoding vs test in the data file we'll get later on).
+
+The final step here is to actually write the json object to the html file that we are making. This will show up inside the html inside a `<script> </script>` element in the html. We do this using jspsychr and the `write_to_script()` function. For the writing to html to occur, the R code chunk needs to have the knitr option results = "asis".
+
+For example, this creates a new javascript variable called `encoding_stimuli`, that contains the json object in `encoding_json`.
+
+```{r, eval=FALSE}
+write_to_script(encoding_json,"encoding_stimuli")
+```
+
+This creates a new javascript variable called `test_stimuli`, that contains the json object in `test_json`.
+
+```{r, eval=FALSE}
+write_to_script(test_json,"test_stimuli")
+```
+
+Ok, let's take a look at the entire R code chunk for generating the stimuli. This should be the same as the one you see in the `index.Rmd` file for this example:
+
+```{r, eval= FALSE}
+# load libraries
+library(jspsychr)
+library(dplyr)
+
+# function to make nonwords
+generate_random_string <- function(n_letters = 5){
+  return(paste(sample(LETTERS,n_letters, replace=TRUE), collapse=""))
+}
+
+# make 100 nonwords
+non_words <- unique(sapply(rep(5,200), generate_random_string))
+non_words <- non_words[1:100]
+
+# make encoding dataframe
+encoding_df <- data.frame(stimulus = NA,
+                          string = non_words[1:50],
+                          phase = "Encoding",
+                          font_size = rep(c("15pt","30pt"), each = 25)
+                          )
+
+encoding_df$stimulus <- html_stimulus(df = encoding_df, 
+                                html_content = "string",
+                                html_element = "p",
+                                column_names = c("font_size"),
+                                css = c("font-size"),
+                                id = "id_encode")
+
+# make test dataframe
+test_df <- data.frame(stimulus = NA,
+                          string = non_words[1:50],
+                          phase = "test",
+                          type = "OLD",
+                          font_size = rep(c("15pt","30pt"), each = 25)
+                          ) %>%
+  rbind(
+    data.frame(stimulus = NA,
+                          string = non_words[51:100],
+                          phase = "test",
+                          type = "NEW",
+                          font_size = rep(c("15pt","30pt"), each = 25)
+                          )
+  )
+
+test_df$stimulus <- html_stimulus(df = test_df, 
+                                html_content = "string",
+                                html_element = "p",
+                                column_names = c("font_size"),
+                                css = c("font-size"),
+                                id = "id_encode")
+
+# write json objects
+encoding_json <- stimulus_df_to_json(df = encoding_df,
+                                     stimulus = "stimulus",
+                                     data = c("string","phase","font_size"))
+
+test_json <- stimulus_df_to_json(df = test_df,
+                                     stimulus = "stimulus",
+                                     data = c("string","phase","type","font_size"))
+
+```
+
+```{r, eval=FALSE}
+write_to_script(encoding_json,"encoding_stimuli")
+```
+
+```{r, eval=FALSE}
+write_to_script(test_json,"test_stimuli")
+```
+
+## js code block: the jspsych stuff
+
+The next steps are to modify/rewrite the js code block, which is a bunch of javascript...we are now in the world of javascript...don't worry, if you don't know javascript, it's not too bad.
+
+Let's first take a look at some code that would be loaded by the default jspsychr template, this is located toward the bottom of the js code chunk. We're looking at the jspsych timeline variable. This bit of code makes the timeline variable, and that adds to the timeline by pushing, in order, various parts that occur in the experiment (e.g., show a welcome screen, show instructions, do the test, show a debrief screen).
+
+```{js, eval= FALSE}
+/*set up experiment structure*/
+var timeline = [];
+timeline.push(welcome);
+timeline.push(instructions);
+timeline.push(test);
+timeline.push(debrief);
+```
+
+We'll want  something like this, but need to add an encoding phase after the instructions, and before the test. Maybe also add some test instructions after encodoing phase, before the test phase. All of this is just to show a bit of where we are headed, we need to make some new jspsych objects that will fit into the timeline.
+
+Let's start from the top. Here we make a welcome object, this will display the message in the stimulus field, and require a button press to continue (using the html-keyboard-response plugin). We also say that the each trial will occur once.
+
+```{js, eval= FALSE}
+/* Note this is a js (javascript) code chunk
+
+/* experiment parameters */
+var reps_per_trial_type = 1;
+
+/*set up welcome block*/
+var welcome = {
+  type: "html-keyboard-response",
+  stimulus: "Welcome to the experiment. Press any key to begin."
+};
+```
+
+Let's make some encoding instructions.
+
+```{js, eval=FALSE}
+
+/*set up instructions block*/
+var encoding_instructions = {
+  type: "html-keyboard-response",
+  stimulus: "<p>You will see some nonwords</p>"+
+    "<p>Remember them for a later memory test</p>"+
+    "<p>Press any key to begin.</p>",
+  post_trial_gap: 1000
+};
+
+```
+
+Now we define how the encoding phase will take place. Note we have assigned `encoding_stimuli` (our json object containing the encoding stimuli) to the `timeline_variables` field. And, `randomize_order: true` will randomize the order of presentation for us. The trial_duration has each nonword being presented for 500ms, pretty fast, pay attention!
+
+```{js, eval=FALSE}
+
+/* defining encoding timeline */
+var encoding = {
+  timeline: [{
+    type: 'html-keyboard-response',
+    trial_duration: 500,
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    data: jsPsych.timelineVariable('data')
+  }],
+  timeline_variables: encoding_stimuli,
+  randomize_order: true
+};
+
+```
+
+Let's make some test instructions.
+
+```{js, eval=FALSE}
+
+/*set up instructions block*/
+var test_instructions = {
+  type: "html-keyboard-response",
+  stimulus: "<p>You will see some OLD nonwords</p>"+
+    "<p>And some NEW nonwords</p>"+
+    "<p>Press O for OLD, and N for NEW</p>"+
+    "<p>Press any key to begin.</p>",
+  post_trial_gap: 1000
+};
+
+```
+
+
+And define the test phase timeline. Note we have assigned `test_stimuli` (our json object containing the test stimuli) to the `timeline_variables` field. And, `randomize_order: true` will randomize the order of presentation for us. We also set the response keyboard choices to accept "o" or "n" as responses.
+
+```{js, eval=FALSE}
+
+/* defining test timeline */
+var testing = {
+  timeline: [{
+    type: 'html-keyboard-response',
+    choices: ["o","n"],
+    response_ends_trial: true,
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    data: jsPsych.timelineVariable('data')
+  }],
+  timeline_variables: test_stimuli,
+  randomize_order: true
+};
+
+```
+
+Let's make a debriefing.
+
+```{js, eval=FALSE}
+
+/*set up debrief block*/
+var debrief = {
+  type: "html-keyboard-response",
+  stimulus: "<p>Thanks for participating!</p>",
+  post_trial_gap: 1000
+};
+
+```
+
+Finally, we add everything to the timeline, and initialize the experiment.
+
+```{js, eval= FALSE}
+/*set up experiment structure*/
+var timeline = [];
+timeline.push(welcome);
+timeline.push(encoding_instructions);
+timeline.push(encoding);
+timeline.push(test_instructions);
+timeline.push(testing);
+timeline.push(debrief);
+
+/*start experiment*/
+jsPsych.init({
+    timeline: timeline,
+    on_finish: function() {
+        jsPsych.data.displayData();
+    }
+});
+
+```
+
+The whole thing should look liek this:
+
+```{js, eval= FALSE}
+/* Note this is a js (javascript) code chunk
+
+/* experiment parameters */
+var reps_per_trial_type = 1;
+
+/*set up welcome block*/
+var welcome = {
+  type: "html-keyboard-response",
+  stimulus: "Welcome to the experiment. Press any key to begin."
+};
+
+/*set up instructions block*/
+var encoding_instructions = {
+  type: "html-keyboard-response",
+  stimulus: "<p>You will see some nonwords</p>"+
+    "<p>Remember them for a later memory test</p>"+
+    "<p>Press any key to begin.</p>",
+  post_trial_gap: 1000
+};
+
+
+/* defining encoding timeline */
+var encoding = {
+  timeline: [{
+    type: 'html-keyboard-response',
+    trial_duration: 500,
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    data: jsPsych.timelineVariable('data')
+  }],
+  timeline_variables: encoding_stimuli,
+  randomize_order: true
+};
+
+/*set up instructions block*/
+var test_instructions = {
+  type: "html-keyboard-response",
+  stimulus: "<p>You will see some OLD nonwords</p>"+
+    "<p>And some NEW nonwords</p>"+
+    "<p>Press O for OLD, and N for NEW</p>"+
+    "<p>Press any key to begin.</p>",
+  post_trial_gap: 1000
+};
+
+/* defining test timeline */
+var testing = {
+  timeline: [{
+    type: 'html-keyboard-response',
+    choices: ["o","n"],
+    response_ends_trial: true,
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    data: jsPsych.timelineVariable('data')
+  }],
+  timeline_variables: test_stimuli,
+  randomize_order: true
+};
+
+/*set up debrief block*/
+var debrief = {
+  type: "html-keyboard-response",
+  stimulus: "<p>Thanks for participating!</p>",
+  post_trial_gap: 1000
+};
+
+/*set up experiment structure*/
+var timeline = [];
+timeline.push(welcome);
+timeline.push(encoding_instructions);
+timeline.push(encoding);
+timeline.push(test_instructions);
+timeline.push(testing);
+timeline.push(debrief);
+
+/*start experiment*/
+jsPsych.init({
+    timeline: timeline,
+    on_finish: function() {
+        jsPsych.data.displayData();
+    }
+});
+
+```
+
+## That's it
+
+For now, that's it. You should be able to knit the `index.Rmd` file, generate the html file, and the run the html file in the browser. The data will be displayed in the browser window at the end of the experiment.
+
+I'll add more to this tutorial soon to describe how to save the data to a .csv file if you are running locally. 

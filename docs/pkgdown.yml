@@ -4,6 +4,7 @@ pkgdown_sha: ~
 articles:
   closerlook: closerlook.html
   jspsychr: jspsychr.html
+  recognition: recognition.html
 urls:
   reference: https://crumplab.github.io/jspsychr/reference
   article: https://crumplab.github.io/jspsychr/articles
