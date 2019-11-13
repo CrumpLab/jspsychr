@@ -140,7 +140,7 @@
 <span id="cb3-4"><a href="#cb3-4"></a>}</span>
 <span id="cb3-5"><a href="#cb3-5"></a></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="kw">generate_random_string</span>(<span class="dt">n_letters=</span> <span class="dv">5</span>)</span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; [1] "PPCUM"</span></span></code></pre></div>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; [1] "XGDCJ"</span></span></code></pre></div>
 <p>Now, let’s say I want 100 total non-word strings. I’ll present 50 of them during encoding, and all of them at test. I need to run the above function 100 times, but I also want to make sure I don’t accidentally make the same non-word twice. My quick and dirty strategy will be to generate 200 nonwords and get all the unique ones. That should get me way more than than the 100 I need.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>non_words &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">5</span>,<span class="dv">200</span>), generate_random_string))</span>
 <span id="cb4-2"><a href="#cb4-2"></a>non_words &lt;-<span class="st"> </span>non_words[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span></code></pre></div>
