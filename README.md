@@ -17,14 +17,27 @@ This is an R markdown template and functions for writing and running jspsych exp
 devtools::install_github("CrumpLab/jspsychr")
 ```
 
-## Examples
+<div class="row">
+<div class="col-sm-6">
 
-Read the getting started article (above) for an overview of how `jspsychr` works, and/or head over to the examples repo to see some examples. <https://github.com/CrumpLab/jspsychrexamples>
+<h2>Overview</h2>
 
-## Contributors
+<img src='man/figures/expo.png' align="left" width="100%">
 
-- Matt Crump - jspsychr
-- Danielle Navarro - code to run experiments locally with plumber, and to save data from a local session
-- Josh De Leeuw - the jspsych javascript library
+</div>
+<div class="col-sm-6">
+
+<h2>Examples</h2>
+
+Read the getting started article (above) for an overview of how `jspsychr` works, and/or head over to the examples repo to see some examples, <a href="https://github.com/CrumpLab/jspsychrexamples">https://github.com/CrumpLab/jspsychrexamples</a>
+
+<h2>Contributors</h2>
+
+Matt Crump {jspsychr}, Danielle Navarro {code to run experiments locally with plumber, and to save data from a local session}; Josh De Leeuw {the jspsych javascript library}
+
+</div>
+</div>
+
+
 
 
