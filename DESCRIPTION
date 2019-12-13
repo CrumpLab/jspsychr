@@ -1,8 +1,9 @@
 Package: jspsychr
 Title: Templates and functions for writing and running jspsych experiments from R-studio
-Version: 0.0.0.9000
+Version: 0.0.1.0000
+Date: 2019-12-13
 Authors@R: 
-    person(given = "Matt",
+    person(given = "Matthew J. C.",
            family = "Crump",
            role = c("aut", "cre"),
            email = "mcrump@brooklyn.cuny.edu",

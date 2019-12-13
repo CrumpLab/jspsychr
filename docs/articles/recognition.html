@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">jspsychr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.0</span>
       </span>
     </div>
 
@@ -140,25 +140,24 @@
 <span id="cb3-4"><a href="#cb3-4"></a>}</span>
 <span id="cb3-5"><a href="#cb3-5"></a></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="kw">generate_random_string</span>(<span class="dt">n_letters=</span> <span class="dv">5</span>)</span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; [1] "XGDCJ"</span></span></code></pre></div>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; [1] "JEOOT"</span></span></code></pre></div>
 <p>Now, let’s say I want 100 total non-word strings. I’ll present 50 of them during encoding, and all of them at test. I need to run the above function 100 times, but I also want to make sure I don’t accidentally make the same non-word twice. My quick and dirty strategy will be to generate 200 nonwords and get all the unique ones. That should get me way more than than the 100 I need.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>non_words &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">5</span>,<span class="dv">200</span>), generate_random_string))</span>
 <span id="cb4-2"><a href="#cb4-2"></a>non_words &lt;-<span class="st"> </span>non_words[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span></code></pre></div>
 <p>You can check that there are 100 non words by looking in the environment tab, or by printing non_words to the console, yup there they are:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>non_words</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt;   [1] "SCJSG" "KGIQR" "IIKPH" "DRSGR" "WJFXZ" "RMDBZ" "QHDBO" "GMYOU"</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt;   [9] "ZDDRZ" "CLWAV" "PDDES" "XMBDA" "WZWRU" "IXMLR" "YARJU" "WOWPB"</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;  [17] "OKFYN" "XTJCZ" "CGXFA" "RSKCY" "WHAWH" "IXYMV" "BGWHX" "MOERH"</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;  [25] "ZHXHC" "MKTHA" "WJABV" "GJIDE" "RRIVE" "ETSAP" "RKIFB" "BANUW"</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  [33] "VNSHM" "VVNXY" "SRPRX" "ICMON" "VTWNM" "RJKGZ" "HUXXA" "QLUVO"</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  [41] "NNERJ" "IUWHD" "EPHSF" "EVXJJ" "WJIEJ" "GWBXN" "HTOTT" "AQYWY"</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;  [49] "JENRU" "OSQMV" "NFDBO" "AFGFR" "BQVIG" "XFPWA" "EYDVB" "DMYWH"</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt;  [57] "WRZSL" "CLSMZ" "RFUMS" "IAVBI" "BRPDH" "XTMFV" "IQNZR" "TXAML"</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt;  [65] "ZBQIZ" "UCFBA" "MVQTL" "AKVYO" "QQBRS" "BKMZK" "MEZEC" "OGFVC"</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt;  [73] "GICZC" "PVXKZ" "HMCIO" "SGNVH" "OQHWR" "MMUMF" "SUDLD" "HBSHH"</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt;  [81] "TKCRX" "KNJKS" "OPYPY" "FSHUW" "YYPAR" "XHODZ" "STJDK" "GLZBC"</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt;  [89] "DPLLA" "ILPFG" "TQDMR" "GKUJS" "BKQUM" "UACBZ" "KAMEL" "BMLSJ"</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt;  [97] "DAKTD" "CXPEE" "HLHPC" "BGTNE"</span></span></code></pre></div>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt;   [1] "OHMGS" "NNSGP" "FDQIJ" "NNKMJ" "CEIIR" "OAMLL" "JIKBS" "JZISA" "ZLBWB"</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt;  [10] "EJQLP" "ZNWKY" "AJUMA" "QJSBZ" "FGEPT" "IYSFK" "IIINX" "DAHTF" "UFXTR"</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;  [19] "HXBYJ" "YCXNK" "HMSBW" "MYWUZ" "KCNGC" "QYWYX" "BUYLB" "UUBBK" "CQRLL"</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;  [28] "SUHUF" "XWSSO" "WBWWW" "QEKDV" "QVEMK" "BCJVJ" "EIDXW" "ERAHN" "XETJO"</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  [37] "DKAAL" "DFEVN" "KCGQW" "KMHHH" "HYRWF" "LFEME" "NCNIS" "UINPB" "RFZVN"</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  [46] "ZKNVM" "LTPOI" "UQSNM" "WAOUU" "MJDQA" "PHLKB" "OJRSK" "DMTYD" "EQUDA"</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;  [55] "GZQNW" "PLMEJ" "UCIAS" "NFWZM" "EWKIO" "PAXLA" "UXXIJ" "LYDLW" "OVWDN"</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt;  [64] "PCUFW" "VXWFF" "GAPDQ" "NGYNU" "SOHOE" "SITYN" "SEUQP" "YTAMT" "GJICR"</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt;  [73] "LSZUP" "KBPZW" "FXQVZ" "GWFMF" "VRTOJ" "SOQDK" "NKMXE" "PYODG" "DQZPE"</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt;  [82] "ZXVNV" "HDGBX" "BOUGR" "AWHWQ" "VHNOB" "EKFER" "YOCGQ" "AWBQZ" "PFPAT"</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt;  [91] "RBNJT" "SKEDV" "TYKIJ" "LABAL" "EBFVO" "BUGYJ" "IHZGO" "YOVGU" "MNWMS"</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; [100] "QLOOV"</span></span></code></pre></div>
 <p>Ok, great I have some nonwords. The next step is to create some data frames. I’m going to create one dataframe for the encoding phase, and another for the test phase. These dataframe will set up parameters for the experimental design that I will to jspsych later on.</p>
 <p>Let’s look at the dataframe for the encoding phase. I want 50 words to be presented, I want to code the fact that they are presented during the encoding phase, and I want to manipulate font size. I’m going to make a dataframe with 4 columns: stimulus, string, phase, and font_size. I’ll populate the string column with the first 50 nonwords, and I’ll populate the font_size column with two levels of font size (15pt vs. 30pt), such that the first 25 items are assigned to 15pt and the remaining are assigned to 30pt.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>encoding_df &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">stimulus =</span> <span class="ot">NA</span>,</span>
@@ -479,7 +478,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Matt Crump.</p>
+  <p>Developed by Matthew J. C. Crump.</p>
 </div>
 
 <div class="pkgdown">
