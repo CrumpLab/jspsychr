@@ -2,6 +2,7 @@ Package: jspsychr
 Title: Templates and functions for writing and running jspsych experiments from R-studio
 Version: 0.0.1.0000
 Date: 2019-12-13
+URL: https://github.com/CrumpLab/jspsychr
 Authors@R: 
     person(given = "Matthew J. C.",
            family = "Crump",

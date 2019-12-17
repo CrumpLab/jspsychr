@@ -72,7 +72,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/CrumpLab/jspsychr">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -88,7 +95,7 @@
       <h1>Walkthrough to build a Recognition memory experiment</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/CrumpLab/jspsychr/blob/master/vignettes/recognition.Rmd"><code>vignettes/recognition.Rmd</code></a></small>
       <div class="hidden name"><code>recognition.Rmd</code></div>
 
     </div>
@@ -140,24 +147,24 @@
 <span id="cb3-4"><a href="#cb3-4"></a>}</span>
 <span id="cb3-5"><a href="#cb3-5"></a></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="kw">generate_random_string</span>(<span class="dt">n_letters=</span> <span class="dv">5</span>)</span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; [1] "JEOOT"</span></span></code></pre></div>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; [1] "UPCEQ"</span></span></code></pre></div>
 <p>Now, let’s say I want 100 total non-word strings. I’ll present 50 of them during encoding, and all of them at test. I need to run the above function 100 times, but I also want to make sure I don’t accidentally make the same non-word twice. My quick and dirty strategy will be to generate 200 nonwords and get all the unique ones. That should get me way more than than the 100 I need.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>non_words &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">5</span>,<span class="dv">200</span>), generate_random_string))</span>
 <span id="cb4-2"><a href="#cb4-2"></a>non_words &lt;-<span class="st"> </span>non_words[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span></code></pre></div>
 <p>You can check that there are 100 non words by looking in the environment tab, or by printing non_words to the console, yup there they are:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>non_words</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt;   [1] "OHMGS" "NNSGP" "FDQIJ" "NNKMJ" "CEIIR" "OAMLL" "JIKBS" "JZISA" "ZLBWB"</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt;  [10] "EJQLP" "ZNWKY" "AJUMA" "QJSBZ" "FGEPT" "IYSFK" "IIINX" "DAHTF" "UFXTR"</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;  [19] "HXBYJ" "YCXNK" "HMSBW" "MYWUZ" "KCNGC" "QYWYX" "BUYLB" "UUBBK" "CQRLL"</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;  [28] "SUHUF" "XWSSO" "WBWWW" "QEKDV" "QVEMK" "BCJVJ" "EIDXW" "ERAHN" "XETJO"</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  [37] "DKAAL" "DFEVN" "KCGQW" "KMHHH" "HYRWF" "LFEME" "NCNIS" "UINPB" "RFZVN"</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  [46] "ZKNVM" "LTPOI" "UQSNM" "WAOUU" "MJDQA" "PHLKB" "OJRSK" "DMTYD" "EQUDA"</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;  [55] "GZQNW" "PLMEJ" "UCIAS" "NFWZM" "EWKIO" "PAXLA" "UXXIJ" "LYDLW" "OVWDN"</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt;  [64] "PCUFW" "VXWFF" "GAPDQ" "NGYNU" "SOHOE" "SITYN" "SEUQP" "YTAMT" "GJICR"</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt;  [73] "LSZUP" "KBPZW" "FXQVZ" "GWFMF" "VRTOJ" "SOQDK" "NKMXE" "PYODG" "DQZPE"</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt;  [82] "ZXVNV" "HDGBX" "BOUGR" "AWHWQ" "VHNOB" "EKFER" "YOCGQ" "AWBQZ" "PFPAT"</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt;  [91] "RBNJT" "SKEDV" "TYKIJ" "LABAL" "EBFVO" "BUGYJ" "IHZGO" "YOVGU" "MNWMS"</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; [100] "QLOOV"</span></span></code></pre></div>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt;   [1] "WUDKN" "ROKEV" "MONJX" "VLRWX" "JJQYA" "WGCGY" "VKTCE" "QWSLE" "CMBYQ"</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt;  [10] "MHHEP" "ZFCAL" "CICWE" "AKUVZ" "OVYFE" "YGOOC" "FIZPZ" "RJLME" "VZMOE"</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;  [19] "DSMBV" "SGGYP" "GMYUP" "CNAGY" "DPDWX" "PPVCX" "QBDGU" "LTSXU" "YEKQR"</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;  [28] "SCKZS" "DANXZ" "WCHAN" "WZRZD" "BWJOM" "PTBNI" "NCIET" "FKCLY" "VCXQL"</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  [37] "RGDIQ" "BQNUV" "QRCAH" "LAMRD" "YSWPW" "LGYKD" "DHBOL" "TRCNV" "QVVUP"</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  [46] "WLQKJ" "LSHVC" "VSSTU" "TLBKV" "GBXIF" "DVIBF" "JDGXY" "IFRDL" "DQVKX"</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;  [55] "NPOQL" "UEKDN" "NAIBG" "PQASZ" "RTIMU" "SPMWE" "KHQJF" "GHIUW" "EEBDC"</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt;  [64] "WFVUW" "HJCAF" "UUVTM" "FEBGR" "VIJFZ" "TKIFB" "WBVJH" "GFHUR" "JONRH"</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt;  [73] "MQZKU" "PIWNO" "GBZUH" "RENPV" "VCMXO" "ZCZFL" "CVSEJ" "ALDWE" "XIZFG"</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt;  [82] "TUJHV" "HAVVE" "FVWLO" "BNRDX" "AZABM" "FRSKL" "SJKLC" "ETSXV" "GGRKI"</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt;  [91] "RTSIF" "QEIDT" "SCIEF" "QGQEL" "YKSGG" "MDYYK" "PHFMG" "XTUJW" "GQPCK"</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; [100] "OWLII"</span></span></code></pre></div>
 <p>Ok, great I have some nonwords. The next step is to create some data frames. I’m going to create one dataframe for the encoding phase, and another for the test phase. These dataframe will set up parameters for the experimental design that I will to jspsych later on.</p>
 <p>Let’s look at the dataframe for the encoding phase. I want 50 words to be presented, I want to code the fact that they are presented during the encoding phase, and I want to manipulate font size. I’m going to make a dataframe with 4 columns: stimulus, string, phase, and font_size. I’ll populate the string column with the first 50 nonwords, and I’ll populate the font_size column with two levels of font size (15pt vs. 30pt), such that the first 25 items are assigned to 15pt and the remaining are assigned to 30pt.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>encoding_df &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">stimulus =</span> <span class="ot">NA</span>,</span>
