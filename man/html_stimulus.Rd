@@ -4,8 +4,14 @@
 \alias{html_stimulus}
 \title{Write html stimulus description from dataframe}
 \usage{
-html_stimulus(df, html_content, html_element, column_names, css = NULL,
-  id = "my_stim")
+html_stimulus(
+  df,
+  html_content,
+  html_element,
+  column_names,
+  css = NULL,
+  id = "my_stim"
+)
 }
 \arguments{
 \item{df}{data.frame containing stimulus information and css codes in columns}

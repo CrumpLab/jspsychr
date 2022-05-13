@@ -1,0 +1,15 @@
+---
+title: "title"
+author: "Author"
+output: 
+  jspsychr::basic_html:
+    css: NULL
+    self_contained: yes
+    theme: null
+    toc: no
+    cold_folding: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
